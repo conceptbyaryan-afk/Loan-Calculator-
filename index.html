@@ -7,7 +7,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>Loan A/C Calculator</title>
+<title>TPNK</title>
 <style>
 :root{
   --paper:#f4f1ea; --card:#fffdf8; --ink:#17231d; --mute:#69776f; --line:#e4dfd2;
@@ -55,6 +55,8 @@ details{margin-top:14px}summary{cursor:pointer;color:var(--mute);font-size:13px}
 .grid small{font-size:11.5px;opacity:.8}
 .btn{font:inherit;font-weight:700;border:0;border-radius:12px;padding:13px;cursor:pointer;width:100%}
 .btn.light{background:#fff;color:var(--green);margin-top:14px}
+.btn.primary{background:var(--green);color:#fff;margin-top:18px;font-size:17px;padding:15px}
+input[type=date]:invalid,input[type=date]:placeholder-shown{color:var(--mute)}
 .btn.ghost{background:var(--tint);color:var(--green)}
 .link{background:none;border:0;color:var(--warn);font:inherit;font-size:13px;cursor:pointer;padding:4px}
 h2{font-size:15px;margin:0 0 10px}
@@ -80,7 +82,7 @@ tbody tr+tr td{border-top:1px solid var(--line)}
 <div class="wrap">
   <header>
     <div class="logo">₹%</div>
-    <div><h1>Loan A/C Calculator</h1><div class="tag">Own rate · date to date · Max 30 days</div></div>
+    <div><h1>TPNK</h1><div class="tag">Own rate · date to date · Max 30 days</div></div>
   </header>
 
   <button class="btn ghost" id="install">📲 Install this app on your phone</button>
@@ -130,6 +132,7 @@ tbody tr+tr td{border-top:1px solid var(--line)}
         <option value="0">Leave out the To day</option>
       </select>
     </details>
+    <button class="btn primary" id="calc">Calculate</button>
     <div class="err" id="err" role="alert"></div>
   </div>
 
@@ -204,7 +207,8 @@ function compute(){
   const P = parseFloat($('principal').value), r = parseFloat($('rate').value), f = $('from').value, t = $('to').value;
   if (isNaN(P) || P < 0) return {error: 'Enter the principal amount.'};
   if (isNaN(r) || r < 0) return {error: 'Enter the rate of interest.'};
-  if (!f || !t)          return {error: 'Select both From and To dates.'};
+  if (!f)                return {error: 'Pick the From date (tap the From date box and choose a date).'};
+  if (!t)                return {error: 'Pick the To date.'};
   const ratePA = $('unit').value === 'pm' ? r * 12 : r;
   const res = LoanCore.calc({P, ratePA, from: f, to: t, incl: $('incl').value === '1', mode, n: freq, convention: effConv()});
   if (res.error) return res;
@@ -243,6 +247,12 @@ function refresh(){
   $('err').textContent = ''; show(c);
 }
 document.querySelectorAll('input,select').forEach(el => el.addEventListener('input', refresh));
+$('calc').onclick = () => {
+  const c = compute();
+  if (c.error) { $('err').textContent = c.error; if (!last) $('out').hidden = true; return; }
+  $('err').textContent = ''; show(c);
+  $('out').scrollIntoView({behavior: 'smooth', block: 'start'});
+};
 
 function render(){
   $('listCard').hidden = !accounts.length;

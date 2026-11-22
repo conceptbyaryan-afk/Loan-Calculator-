@@ -1,6 +1,6 @@
 {
-  "name": "Loan A/C Calculator",
-  "short_name": "Loan Calc",
+  "name": "TPNK",
+  "short_name": "TPNK",
   "description": "Simple and compound interest for loan accounts, date to date, 30-day month.",
   "start_url": "./index.html",
   "scope": "./",
